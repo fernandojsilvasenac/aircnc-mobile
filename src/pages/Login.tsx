@@ -4,27 +4,32 @@ import logo from '../assets/logo.png';
 
 import api from '../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes';
 
-export function Login(){
+
+type LoginScreenProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>
+}
+
+export function Login({navigation}:LoginScreenProps){
     const [email, setEmail] = useState('');
     const [techs, setTechs]  = useState('');
   
     useEffect( () =>{
-  
+      AsyncStorage.getItem('user').then( user=> {
+        if (user) navigation.navigate('List')
+      })
     },[])
   
     async function handleSubmit(){
-      console.log(email, techs);
-  
       const response = await api.post('/session', {email})
-  
-      console.log(response.data);
       
       const { _id } = response.data;
       await AsyncStorage.setItem('user', _id);
       await AsyncStorage.setItem('techs', techs);
   
-      //navigation.navigate('List');
+      navigation.navigate('List');
   
     }
   

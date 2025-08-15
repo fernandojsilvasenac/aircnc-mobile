@@ -28,7 +28,7 @@ export function Login({navigation}:LoginScreenProps){
       const { _id } = response.data;
       await AsyncStorage.setItem('user', _id);
       await AsyncStorage.setItem('techs', techs);
-  
+      // console.log(techs)
       navigation.navigate('List');
   
     }

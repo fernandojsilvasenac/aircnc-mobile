@@ -1,4 +1,5 @@
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../routes';
 import api from '../services/api';
@@ -12,11 +13,13 @@ interface Spot {
     _id: string;
     company: string;
     price: number | null; 
-    thumbnail_url: string;
+    thumbnail: string;
 }
 
 export function SpotList({tech}:SpotListProps){
+const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()    
 const [spots, setSpots ] = useState<Spot[]>([]);
+const preview = 'http://10.53.52.44:3335/files';
 
     useEffect( () =>{
         async function loadSpots(){
@@ -31,23 +34,37 @@ const [spots, setSpots ] = useState<Spot[]>([]);
     },[])
 
     return (
-        <View>
-            <Text>Empresas que usam <Text>??Variavel tecnologia</Text></Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Empresas que usam <Text style={styles.bold}>{tech}</Text></Text>
             <FlatList
                 style={styles.list}
                 data={spots}
                 horizontal
-                showsHorizontalScrollIndicator={true}
-                renderItem={ ({ item }) => (
-                   <View>
+                showsHorizontalScrollIndicator={false}
+                renderItem={ ({ item }) => 
+                // console.log() para mostrar as imagens do banco e montar a URL    
+                // {
+                //     const preview = 'http://10.53.52.44:3335/files';
+                //     const imageUri = `${preview}/${item.thumbnail}`
+                //     console.log('URI da imagem ', imageUri)
+                //     return(
+                //         <View>
+                //             <Image style={styles.thumbnail}
+                //              source={{uri: imageUri}}
+                //          />
+                //         </View>
+                //     )
+                // }
+                (
+                   <View style={styles.listItem}>
                         <Image style={styles.thumbnail}
-                            source={{uri:item.thumbnail_url}}
+                            source={{uri: `${preview}/${item.thumbnail}`}}
                         />
                         <Text style={styles.company}>
                             {item.company}
                         </Text>
                         <Text style={styles.price}>
-{item.price ? `R$${item.price}/dia` : 'GRATUITO'}
+                            {item.price ? `R$${item.price}/dia` : 'GRATUITO'}
                         </Text>
                         <TouchableOpacity style={styles.button}>
                             <Text style={styles.buttonText}>
@@ -81,7 +98,7 @@ const styles = StyleSheet.create({
         paddingHorizontal:20,
     },
     listItem:{
-        marginRight:15,
+        marginRight:25,
     },
     thumbnail:{
         width:200,

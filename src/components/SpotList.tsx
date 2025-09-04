@@ -23,15 +23,21 @@ const preview = 'http://10.53.52.44:3335/files';
 
     useEffect( () =>{
         async function loadSpots(){
+            console.log(tech)
             const response = await api.get('/spots', {
                 params: { tech }
             })
+            // console.log(response.data)
             
             setSpots(response.data)
 
         }
         loadSpots()
     },[])
+
+    function handleNavigate(id: string){
+        navigation.navigate('Book', {id})
+    }
 
     return (
         <View style={styles.container}>
@@ -66,7 +72,7 @@ const preview = 'http://10.53.52.44:3335/files';
                         <Text style={styles.price}>
                             {item.price ? `R$${item.price}/dia` : 'GRATUITO'}
                         </Text>
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity onPress={() => handleNavigate(item._id)} style={styles.button}>
                             <Text style={styles.buttonText}>
                                 Solicitar reserva
                             </Text>
